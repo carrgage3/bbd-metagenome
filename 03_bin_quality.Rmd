@@ -39,4 +39,25 @@ cp ../metabat/bins_bbd/*.fa bins_bbd/
 # 4. Run a slurm script for checkm in a text file <run_checkm_bbd.sh>
 ```
 
+```{steps: bin_selection}
+
+# 1. Change directory to [checkm] (again)
+```{bash}
+cd ~/bbd-metagenome/checkm
+
+# 2. View results from [checkm_results_bbd.txt] using <head>, <cat>, <more> or <less>
+```{bash}
+head checkm_results_bbd.txt
+head -n 20 checkm_results_bbd.txt
+
+## Focus on bins with a completeness greater than 15%
+cat checkm_results_bbd.txt | awk '$13>15'
+
+## We just want the ID of the bin, so use the following script instead:
+cat checkm_results_bbd.txt | awk '$13>15{print $1}'
+
+## Send the output to a file to use in the next step:
+cat checkm_results_bbd.txt | awk '$13>15{print $1}' > bbd_topbins.txt
+```
+
 Completeness and contamination of each bin, estimated with CheckM, and selection of the most complete bins for further analysis. Commands for this step were run in `checkm/`.

@@ -29,7 +29,7 @@ bash chunk. R chunks run from the top of the repository.
 cd ~/bbd-metagenome/flye
 ln -s /pvol/data/metagenome_assembly/bbd_0.1.fastq.gz
 
-# 2. Run new shell script called run_flye_bbd.sh using a slurm script and save inside flye directory (separate text file)
+# 2. Run new shell script called run_flye_bbd.sh using a slurm script and save inside flye directory <run_flye_bbd.sh>
 # 3. Submit job (this could take several hours so starting it early is always ideal)
 
 ```{bash}
