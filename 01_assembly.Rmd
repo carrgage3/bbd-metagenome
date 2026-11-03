@@ -22,6 +22,7 @@ Explain what this step does and why, and copy each command you ran into a
 bash chunk. R chunks run from the top of the repository.
 -->
 ```{steps: assembly}
+
 # 1. Change directory to flye and setup a symbolic link to bbd read data
 
 ```{bash}
@@ -33,6 +34,11 @@ ln -s /pvol/data/metagenome_assembly/bbd_0.1.fastq.gz
 
 ```{bash}
 sbatch run_flye_bbd.sh
+
+# 4. Check to see if job has been completed yet before moving on to <binning>
+
+```{bash}
+sacct -j XXX --format=JobID,State,MaxRSS,Elapsed
 
 ```
 Assembly of the BBD nanopore reads with Flye. Commands for this step were run in `flye/`.
