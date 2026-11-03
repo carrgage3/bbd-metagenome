@@ -23,5 +23,20 @@ bash chunk. R chunks run from the top of the repository.
 -->
 ```{steps: bin_quality}
 
+# 1. Move to [checkm] file directory
+```{bash}
+cd ~/bbd-metagenome/checkm
+
+# 2. Find the longest contig within the bins using the following command:
+```{bash}
+cat ../flye/bbd/assembly.fasta | bioawk -c fastx '{print length($seq),$name}' | sort -n
+
+# 3. Replace the template code below (contig_XX) with the longest contig number:
+```{bash}
+samtools faidx ../flye/bbd/assembly.fasta contig_XX > ../metabat/bins_bbd/contig_XX.fa
+cp ../metabat/bins_bbd/*.fa bins_bbd/
+
+# 4. Run a slurm script for checkm in a text file <run_checkm_bbd.sh>
 ```
+
 Completeness and contamination of each bin, estimated with CheckM, and selection of the most complete bins for further analysis. Commands for this step were run in `checkm/`.
