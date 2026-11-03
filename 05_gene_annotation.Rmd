@@ -22,4 +22,24 @@ Explain what this step does and why, and copy each command you ran into a
 bash chunk. R chunks run from the top of the repository.
 -->
 
+```{steps: gene_annotation}
+# 1. Change directory to [prokka] folder
+```{bash}
+cd ~/bbd-metagenome/prokka
+
+# 2. Choose a bin to get a rough idea of how prokka operates
+```{bash}
+cat ../checkm/bbd_topbins.txt
+bin=metabat.XX
+prokka --cpus 2 --outdir $bin --prefix $bin  ../metabat/bins_bbd/${bin}.fa
+
+# 3. Check metabat.XX folder that is created
+```{bash}
+ls metabat.XX
+
+# 4. Now run prokka for all metagenomes using a slurm script <run_prokka.sh>
+```{bash}
+sbatch run_prokka.sh
+```
+
 Gene prediction and annotation of the most complete bins with Prokka. Commands for this step were run in `prokka/`.
