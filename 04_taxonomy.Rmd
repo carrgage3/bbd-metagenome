@@ -45,6 +45,13 @@ while read bin;do cp "../metabat/bins_bbd/${bin}.fa" genomes;done < ../checkm/bb
 ls genomes
 
 # 6. Run a slurm script for <gtdbtk> in a text file <run_gtdbtk.sh>
+```{bash}
+sbatch run_gtdbtk.sh
+
+# 7. Check summary of classifications and copy summary to [gtdbtk] folder
+```{bash}
+ls -l out/gtdbtk.bac120.summary.tsv
+cp out/gtdbtk.bac120.summary.tsv .
 ```
 
 Taxonomic classification of the most complete bins with GTDB-Tk. Commands for this step were run in `gtdbtk/`.
