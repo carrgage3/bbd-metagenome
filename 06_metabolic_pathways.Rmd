@@ -22,4 +22,82 @@ Explain what this step does and why, and copy each command you ran into a
 bash chunk. R chunks run from the top of the repository.
 -->
 
+```{steps: metabolic_pathways}
+# 1. Change directory to [minpath] folder
+```{bash}
+cd ~/bbd-metagenome/minpath
+
+# 2. Display the prokka.tsv file
+```{bash}
+# Display .tsv for a single bin
+head ../prokka/metabat.48/metabat.48.tsv
+# Only show gene ID (column 1) and EC number (column 5)
+head ../prokka/metabat.48/metabat.48.tsv | awk -F '\t' '{print $1,$5}'
+# Filter output to only include lines with an EC number
+head ../prokka/metabat.48/metabat.48.tsv | awk -F '\t' '$5{print $1,$5}'
+# Ensure output is tab separated and remove header line
+head ../prokka/metabat.48/metabat.48.tsv | awk -F '\t' '$5{OFS="\t";print $1,$5}' | grep -v '^locus'
+
+# 3. Change <head> to <cat> to ensure all genes are being shown
+```{bash}
+cat ../prokka/metabat.48/metabat.48.tsv | awk -F '\t' '$5{OFS="\t";print $1,$5}' | grep -v '^locus'
+# Send output to a file to be used in minpath
+cat ../prokka/metabat.48/metabat.48.tsv | awk -F '\t' '$5{OFS="\t";print $1,$5}' | grep -v '^locus' > metabat.48.ec
+
+# 4. Run minpath
+```{bash}
+minpath -ec metabat.48.ec -report metabat.48.ec.report -details metabat.48.ec.details
+
+# 5. Look at first few lines of output
+```{bash}
+head metabat.48.ec.report 
+
+# 6. Notes on first line shown: 
+path PWY-7321 any n/a  naive 1  minpath 0  fam0  4  fam-found  1  name  ecdysteroid metabolism (arthropods)
+
+# PWY-7321: pathway identifier, which can be used to identify the full pathway
+# naive 1: displays that there is one gene from this pathway that was found
+# minpath 1: determined that minpath kept this pathway in its minimal set of pathways. If >minpath 0< is displayed, then there is weak evidence for the gene
+# fam0 4: determines the amount of gene pathways that are involved in the pathway (four)
+# fam-found 2: determines the found gene families from the pathway genome (two out of four)
+# name ecdysteroid metabolism (arthropods): name for the pathway
+
+# 7. Use <cat> and <minpath> to get outputs from every bin
+```{bash}
+# <cat> function
+while read bin;do 
+  cat ../prokka/$bin/${bin}.tsv | awk -F '\t' '$5{printf("%s\t%s\n", $1,$5)}' | grep -v '^locus' > ${bin}.ec 
+done < ../checkm/bbd_topbins.txt
+# <minpath> function
+while read bin;do 
+  minpath -ec ${bin}.ec -report ${bin}.ec.report -details ${bin}.ec.details
+done < ../checkm/bbd_topbins.txt
+
+# 8. Find PWY-101 pathway (photosynthesis light reactions) and PWY-5360 pathway (superpathway of tetrathionate reduction)
+```{bash}
+grep 'PWY-101' *.ec.report
+grep 'PWY-5360' *.ec.report
+
+#### Question 4.1 ####
+## 1. How many bins contain at least one gene from this pathway?
+# Four bins
+## 2. Which bin has all of the genes (ie a complete pathway)?
+# metabat.30: fam0 4 / fam-found 4
+## 3. For which bins does minpath keep the pathway (minpath 1)?
+# metabat.10 and metabat.30 both contain minpath 1
+
+#### Question 4.2 ####
+## 1. How many bind contain the pathway PWY-5360?
+# One bin contains PWY-5360
+## 2. What order (in a taxonomic sense) do these bins belong to? Are they in the same family?
+# The taxonomic order of this bin is >Campylobacterales<
+## 3. How strong is the evidence that these bins really have this pathway? Look at >fam-found< and >minpath< columns
+# The evidence for this bin is not very strong, due to the >fam-found< value being 1-out-of-3 and the >minpath< value being 0, meaning other pathways would better explain this gene
+
+# 9. Cross reference results with output from gtdbtk (taxonomy)
+```{bash}
+grep 'metabat.XX' ../gtdbtk/gtdbtk.bac120.summary.tsv
+
+```
+
 Metabolic pathways inferred from the Prokka annotations with MinPath. Commands for this step were run in `minpath/`.
